@@ -9,7 +9,7 @@
 // Sin `invitado` no se dibuja el nombre en la portada; sin `pases` no se
 // dibuja la etiqueta de pases al pie. Así la misma pieza sirve para la
 // versión general y para las 61 personalizadas.
-// import Portada from "./Portada.astro"; // APAGADA mientras se diseña el resto
+import Portada from "./Portada.astro";
 import Versiculo from "./Versiculo.astro";
 import NombresPadres from "./NombresPadres.astro";
 import NombresFlores from "./NombresFlores.astro";
@@ -40,7 +40,7 @@ const { invitado, pases } = Astro.props;
 ---
 
 <!-- PORTADA (cubre todo hasta que se toca el sobre) -->
-{/* <Portada invitado={invitado} /> */}
+<Portada invitado={invitado} />
 
 <!-- CONTENIDO DE LA INVITACIÓN -->
 <div id="contenido-principal">
