@@ -8,7 +8,7 @@
     id="boton-musica"
     type="button"
     aria-label="Pausar o reanudar la música"
-    class="fixed bottom-5 right-5 z-[9000] w-12 h-12 rounded-full bg-marron text-crema shadow-[0_6px_16px_rgba(0,0,0,0.28)] flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 hover:scale-105 cursor-pointer"
+    class="fixed bottom-5 right-5 z-[9000] w-12 h-12 rounded-full boton-azul shadow-[0_6px_16px_rgba(0,0,0,0.28)] flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 hover:scale-105 cursor-pointer"
 >
     <!--
        El icono anuncia lo que pasa al tocarlo, no el estado actual:
@@ -44,6 +44,14 @@
         <path d="M3 3l18 18"></path>
     </svg>
 </button>
+
+<style>
+    /* El azul del diseño, el mismo que usan los bloques de la invitación */
+    .boton-azul {
+        background-color: #284f80;
+        color: #ffffff;
+    }
+</style>
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {

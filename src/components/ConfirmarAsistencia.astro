@@ -13,16 +13,18 @@ const parrafos = [
 const textoBoton = "Confirmar";
 const cierre = "Nos encantaría compartir nuestra felicidad contigo";
 
-// Falta el número de los novios. Cuando llegue va acá y el botón abre
-// WhatsApp solo, con el mensaje de abajo ya escrito.
-const whatsapp = "";
-const mensaje =
-    "¡Hola! Confirmo mi asistencia a la boda. Muchas gracias por la invitación.";
+// WhatsApp de los novios, con el código de país y sin signos ni espacios
+const whatsapp = "59172105495";
+
+// El mensaje se arma con estos dos, así los nombres y la fecha no quedan
+// escritos a mano dentro de la frase.
+const novios = "Maquiber y Elva Adriana";
+const diaBoda = "5 de diciembre de 2026";
 // ──────────────────────────────────────────────────────────────
 
-const enlace = whatsapp
-    ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(mensaje)}`
-    : "#";
+const mensaje = `Me complace confirmar mi asistencia a la boda de ${novios} para el día ${diaBoda}. ¡Ahí estaré sin falta!`;
+
+const enlace = `https://wa.me/${whatsapp}?text=${encodeURIComponent(mensaje)}`;
 ---
 
 <section id="confirmar-asistencia" class="confirmar">
