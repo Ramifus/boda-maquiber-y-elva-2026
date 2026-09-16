@@ -1,0 +1,608 @@
+---
+// src/components/Portada.astro - Portada de una sola pantalla:
+//   marco de flores + anuncio + fecha + el sobre.
+//
+// El sobre son tres imágenes apiladas, en este orden:
+//   1. sobre1.png  — el sobre de atrás (el que abre y marca el alto)
+//   2. fot1.png    — la foto, que sale desde adentro del sobre
+//   3. sobre2.png  — la tapa de adelante con el sello, que la tapa abajo
+//
+// Se toca el sobre: arranca la música y se abre la invitación.
+//
+// El nombre del invitado llega desde la página: las personalizadas
+// (/[slug]) lo pasan tal cual está escrito en lista.txt, y la genérica (/)
+// no lo pasa, así que esa línea directamente no se dibuja.
+interface Props {
+    invitado?: string;
+}
+
+const { invitado } = Astro.props;
+
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const anuncio = "¡Nos Casamos!";
+const fecha = "05.12.26";
+const textoSobre1 = "Presiona el sobre para";
+const textoSobre2 = "abrir tu invitación";
+// ──────────────────────────────────────────────────────────────
+---
+
+<!-- CAPA BLANCA DE TRANSICIÓN — tapa el fondo del layout durante el fade -->
+<div
+    id="capa-blanca"
+    style="
+    position: fixed;
+    inset: 0;
+    background: #ffffff;
+    z-index: 8499;
+    opacity: 1;
+    pointer-events: none;
+"
+>
+</div>
+
+<!--
+   La portada va por debajo del botón flotante de música (z 9000): una vez
+   tocado el sobre la melodía ya suena y el invitado tiene que poder
+   pausarla mientras termina la transición.
+-->
+<section
+    class="fixed inset-0 w-full h-screen flex justify-center z-[8500]"
+    id="portada-section"
+    style="background-color: #e9e4dd;"
+>
+    <!-- Columna móvil: el diseño nunca se estira en tablet / PC -->
+    <div class="portada-columna">
+        <!-- Marco de flores: una por esquina, detrás del contenido -->
+        <div id="flores-portada">
+            <img
+                src="/imagenes/flor1.png"
+                alt=""
+                width="479"
+                height="788"
+                class="flor flor-1"
+            />
+            <img
+                src="/imagenes/flor2.png"
+                alt=""
+                width="232"
+                height="419"
+                class="flor flor-2"
+            />
+            <img
+                src="/imagenes/flor3.png"
+                alt=""
+                width="205"
+                height="417"
+                class="flor flor-3"
+            />
+            <img
+                src="/imagenes/flor4.png"
+                alt=""
+                width="656"
+                height="815"
+                class="flor flor-4"
+            />
+        </div>
+
+        <div class="portada-contenido">
+            <h1 id="anuncio" class="anuncio font-great-vibes">{anuncio}</h1>
+
+            <p id="fecha" class="fecha font-simonetta">{fecha}</p>
+
+            {
+                invitado && (
+                    <p id="invitado-portada" class="invitado font-simonetta">
+                        {invitado}
+                    </p>
+                )
+            }
+
+            <!-- EL SOBRE: sobre1 (atrás) + foto1 (sale) + sobre2 (adelante) -->
+            <div id="sobre-container" class="sobre-container">
+                <img
+                    id="sobre-trasero"
+                    src="/imagenes/sobre1.png"
+                    alt="Sobre de invitación"
+                    width="862"
+                    height="992"
+                    class="sobre-trasero"
+                />
+
+                <img
+                    id="foto-sobre"
+                    src="/imagenes/fot1.png"
+                    alt="Los novios"
+                    class="foto-sobre"
+                />
+
+                <img
+                    id="sobre-frente"
+                    src="/imagenes/sobre2.png"
+                    alt=""
+                    width="862"
+                    height="577"
+                    class="sobre-frente"
+                    aria-hidden="true"
+                />
+            </div>
+
+            <!-- Instrucción -->
+            <p id="instruccion" class="instruccion font-simonetta">
+                {textoSobre1}<br />{textoSobre2}
+            </p>
+        </div>
+    </div>
+</section>
+
+<style>
+    /*
+       Las fuentes de la portada se sirven desde /fonts/ del propio sitio:
+       traerlas de afuera obliga a dos viajes a internet antes de poder
+       dibujar el anuncio, y con señal regular el nombre tarda en aparecer.
+    */
+    @font-face {
+        font-family: "Callem";
+        src: url("/fonts/callem-script.ttf") format("truetype");
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: "Simonetta";
+        src: url("/fonts/Simonetta-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: "Simonetta";
+        src: url("/fonts/Simonetta-Italic.ttf") format("truetype");
+        font-weight: 400;
+        font-style: italic;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: "Simonetta";
+        src: url("/fonts/Simonetta-Black.ttf") format("truetype");
+        font-weight: 900;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: "Simonetta";
+        src: url("/fonts/Simonetta-BlackItalic.ttf") format("truetype");
+        font-weight: 900;
+        font-style: italic;
+        font-display: swap;
+    }
+
+    .font-callem {
+        font-family: "Callem", cursive;
+    }
+
+    .font-simonetta {
+        font-family: "Simonetta", serif;
+    }
+
+    .portada-columna {
+        --azul: #22335c;
+        --azul-claro: #5b7ca8;
+
+        position: relative;
+        width: 100%;
+        max-width: 430px;
+        height: 100%;
+        overflow: hidden;
+        background-color: #f7f5f2;
+        background-image: url("/imagenes/fondoprincipal.png");
+        background-size: auto;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
+    }
+
+    /*
+       Las flores van una por esquina. El ancho de cada una es el que tenía
+       dentro del marco completo (sobre 941 de ancho): flor1 51%, flor2 25%,
+       flor3 22% y flor4 70%. Así el ramo conserva la escala original y el
+       alto sale solo, sin estirar nada.
+    */
+    #flores-portada {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .flor {
+        position: absolute;
+        height: auto;
+    }
+
+    .flor-1 {
+        top: 0;
+        left: 0;
+        width: 51%;
+    }
+
+    .flor-2 {
+        top: 0;
+        right: 0;
+        width: 25%;
+    }
+
+    .flor-3 {
+        bottom: 0;
+        left: 0;
+        width: 22%;
+    }
+
+    .flor-4 {
+        bottom: 0;
+        right: 0;
+        width: 70%;
+    }
+
+    .portada-contenido {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        padding: 0 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    /* El anuncio va del azul claro al azul cerrado, como en el diseño */
+    .anuncio {
+        color: var(--azul-claro);
+        background-image: linear-gradient(
+            100deg,
+            #7b9ac2 0%,
+            #3f5c8a 45%,
+            #22335c 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: clamp(2rem, 10vw, 2.6rem);
+        line-height: 1.15;
+    }
+
+    .fecha {
+        margin-top: 0.9rem;
+        color: var(--azul);
+        font-size: clamp(1.05rem, 5.2vw, 1.35rem);
+        letter-spacing: 0.34em;
+        /* compensa el espaciado que el último carácter deja a la derecha */
+        text-indent: 0.34em;
+    }
+
+    /*
+       El nombre del invitado no se fuerza a un solo renglón: los largos
+       ("Familia Rodríguez Fernández") bajan de línea en vez de achicarse
+       hasta no leerse.
+    */
+    .invitado {
+        margin-top: 0.9rem;
+        max-width: 20rem;
+        color: var(--azul);
+        font-size: clamp(0.85rem, 4vw, 1.02rem);
+        letter-spacing: 0.06em;
+        line-height: 1.5;
+    }
+
+    /*
+       El alto del bloque lo marca sobre1: las otras dos imágenes van
+       absolutas adentro, así las tres quedan siempre alineadas.
+    */
+    .sobre-container {
+        position: relative;
+        width: 100%;
+        max-width: 215px;
+        margin-top: 3.6rem;
+        cursor: pointer;
+        user-select: none;
+        filter: drop-shadow(0 16px 26px rgba(0, 0, 0, 0.22));
+    }
+
+    .sobre-trasero {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: auto;
+        z-index: 1;
+    }
+
+    /*
+       La foto sale de adentro del sobre. El left sale del ancho —(100-78)/2—
+       en vez de un translateX, porque el translate lo maneja GSAP para el
+       efecto de salida y se pisarían.
+    */
+    .foto-sobre {
+        position: absolute;
+        left: 11%;
+        bottom: 26%;
+        width: 78%;
+        aspect-ratio: 4 / 5;
+        object-fit: cover;
+        z-index: 2;
+        border-radius: 2px;
+    }
+
+    .sobre-frente {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: auto;
+        z-index: 3;
+    }
+
+    .instruccion {
+        margin-top: 1.4rem;
+        color: var(--azul);
+        font-size: clamp(0.82rem, 3.7vw, 1rem);
+        letter-spacing: 0.18em;
+        line-height: 2;
+        text-transform: uppercase;
+    }
+
+    body.portada-activa {
+        overflow: hidden !important;
+        height: 100vh !important;
+    }
+
+    /* La capa blanca tapa el fondo del layout siempre */
+    #capa-blanca {
+        transition: opacity 0.4s ease;
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+
+    if (typeof window !== "undefined") {
+        document.addEventListener("DOMContentLoaded", () => {
+            document.body.classList.add("portada-activa");
+
+            const portadaSection = document.getElementById("portada-section");
+            const capaBlanca = document.getElementById("capa-blanca");
+            const flores = document.getElementById("flores-portada");
+            const anuncio = document.getElementById("anuncio");
+            const fecha = document.getElementById("fecha");
+            const invitado = document.getElementById("invitado-portada");
+            const sobreContainer = document.getElementById("sobre-container");
+            const foto = document.getElementById("foto-sobre");
+            const sobreTrasero = document.getElementById("sobre-trasero");
+            const sobreFrente = document.getElementById("sobre-frente");
+            const instruccion = document.getElementById("instruccion");
+            if (!sobreContainer) return;
+
+            // ── Estado inicial ──────────────────────────────────────
+            // La foto arranca metida adentro del sobre, tapada por la tapa
+            // de adelante: el yPercent la baja justo hasta esconderla.
+            gsap.set(flores, { opacity: 0 });
+            gsap.set([anuncio, fecha], { opacity: 0, y: 18 });
+            if (invitado) gsap.set(invitado, { opacity: 0, y: 14 });
+            gsap.set(sobreContainer, { opacity: 0, y: 40, scale: 0.94 });
+            gsap.set(foto, {
+                yPercent: 62,
+                opacity: 0,
+                scale: 0.96,
+                rotate: -2.5,
+                transformOrigin: "bottom center",
+                boxShadow: "0 0px 0px rgba(0,0,0,0)",
+            });
+            gsap.set(instruccion, { opacity: 0, y: 12 });
+
+            // ── Entrada ─────────────────────────────────────────────
+            const tl = gsap.timeline({ delay: 0.3 });
+
+            tl.to(flores, { opacity: 1, duration: 1.2, ease: "power2.out" })
+                .to(
+                    [anuncio, fecha],
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.9,
+                        stagger: 0.18,
+                        ease: "power2.out",
+                    },
+                    0.3,
+                )
+                .to(
+                    sobreContainer,
+                    {
+                        opacity: 1,
+                        y: 0,
+                        scale: 1,
+                        duration: 0.9,
+                        ease: "power2.out",
+                    },
+                    0.75,
+                )
+                // La foto recién sale con el sobre ya quieto. Se asoma con
+                // impulso (pasa un pelo de largo y se acomoda), se endereza
+                // y va ganando sombra a medida que despega del papel.
+                .to(foto, { opacity: 1, duration: 0.25, ease: "none" }, 1.4)
+                .to(
+                    foto,
+                    {
+                        yPercent: 0,
+                        scale: 1,
+                        duration: 1.5,
+                        ease: "back.out(0.9)",
+                    },
+                    1.4,
+                )
+                .to(
+                    foto,
+                    {
+                        rotate: 0,
+                        duration: 1.1,
+                        ease: "power2.out",
+                    },
+                    1.75,
+                )
+                .to(
+                    foto,
+                    {
+                        boxShadow: "0 10px 20px rgba(0,0,0,0.25)",
+                        duration: 1.2,
+                        ease: "power2.out",
+                    },
+                    1.5,
+                )
+                .to(
+                    instruccion,
+                    { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" },
+                    2.3,
+                );
+
+            if (invitado) {
+                tl.to(
+                    invitado,
+                    { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" },
+                    0.9,
+                );
+            }
+
+            // ── Latido sutil del sobre (invita a tocarlo) ───────────
+            // El sobre respira y la foto se mece apenas, un poco más lenta:
+            // desfasadas se ve vivo, en fase parecería una sola estampa.
+            tl.add(() => {
+                gsap.to(sobreContainer, {
+                    y: -8,
+                    duration: 2.4,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "sine.inOut",
+                });
+                gsap.to(foto, {
+                    yPercent: -1.6,
+                    rotate: 0.6,
+                    duration: 3.2,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "sine.inOut",
+                });
+            });
+
+            // ── Hover ───────────────────────────────────────────────
+            // El escalado va por GSAP y no con hover:scale de Tailwind:
+            // el latido de arriba escribe transform inline y le ganaría.
+            sobreContainer.addEventListener("mouseenter", () => {
+                gsap.to(sobreContainer, {
+                    scale: 1.04,
+                    duration: 0.3,
+                    ease: "power2.out",
+                });
+            });
+            sobreContainer.addEventListener("mouseleave", () => {
+                gsap.to(sobreContainer, {
+                    scale: 1,
+                    duration: 0.3,
+                    ease: "power2.out",
+                });
+            });
+
+            // ── Click en el sobre: música y adentro ──────────────────
+            let abriendo = false;
+            sobreContainer.addEventListener("click", () => {
+                if (abriendo) return;
+                abriendo = true;
+
+                gsap.killTweensOf([sobreContainer, foto]);
+
+                // La melodía arranca acá; el botón flotante de
+                // BotonMusica.astro aparece solo al detectarla.
+                const audio = new Audio("/musica/melodia2.mp3");
+                audio.loop = true;
+                audio.volume = 0.5;
+                audio.play().catch((error) => {
+                    console.log("❌ Error al reproducir audio:", error);
+                });
+                (window as any).audioGlobal = audio;
+                (window as any).estaReproduciendoGlobal = true;
+
+                gsap.timeline()
+                    // La foto sale del todo, se endereza y se viene encima
+                    .to(foto, {
+                        yPercent: -38,
+                        rotate: 0,
+                        scale: 1.08,
+                        boxShadow: "0 22px 38px rgba(0,0,0,0.3)",
+                        duration: 0.75,
+                        ease: "power3.out",
+                    })
+                    // El sobre se queda atrás mientras la foto se adelanta
+                    .to(
+                        [sobreTrasero, sobreFrente],
+                        {
+                            opacity: 0,
+                            y: 18,
+                            duration: 0.5,
+                            ease: "power2.in",
+                        },
+                        0.45,
+                    )
+                    .to(
+                        [instruccion, anuncio, fecha, invitado].filter(Boolean),
+                        {
+                            opacity: 0,
+                            y: -10,
+                            duration: 0.4,
+                            stagger: 0.05,
+                            ease: "power2.in",
+                        },
+                        0.15,
+                    )
+                    .to(
+                        sobreContainer,
+                        {
+                            opacity: 0,
+                            scale: 1.35,
+                            duration: 0.6,
+                            ease: "power2.in",
+                        },
+                        0.8,
+                    )
+                    .to(
+                        portadaSection,
+                        {
+                            opacity: 0,
+                            duration: 0.5,
+                            ease: "power2.in",
+                            onStart: () => {
+                                document.body.classList.remove(
+                                    "portada-activa",
+                                );
+                                document.body.style.overflow = "auto";
+                            },
+                            onComplete: () => {
+                                portadaSection?.remove();
+                                // Desvanecer la capa blanca suavemente
+                                gsap.to(capaBlanca, {
+                                    opacity: 0,
+                                    duration: 0.4,
+                                    ease: "power2.out",
+                                    onComplete: () => capaBlanca?.remove(),
+                                });
+                                window.scrollTo({ top: 0, behavior: "smooth" });
+                            },
+                        },
+                        1.05,
+                    );
+            });
+        });
+    }
+</script>

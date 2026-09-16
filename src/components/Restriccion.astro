@@ -1,0 +1,96 @@
+---
+// src/components/Restriccion.astro
+// Solo adultos: la rama florida arriba, el título y la nota.
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const titulo = "Solo Adultos";
+const nota =
+    "Su presencia es el mejor regalo, la de los pequeños esta vez, será en nuestros corazones";
+// ──────────────────────────────────────────────────────────────
+---
+
+<section id="restriccion" class="restriccion">
+    <img
+        src="/imagenes/florseparador2.png"
+        alt=""
+        width="1942"
+        height="809"
+        class="rama"
+        aria-hidden="true"
+    />
+
+    <h2 class="titulo font-great-vibes">{titulo}</h2>
+
+    <p class="nota">{nota}</p>
+</section>
+
+<style>
+    /*
+       Simonetta se declara acá también: cada bloque tiene que poder
+       dibujarse aunque los demás no estén en la página.
+    */
+    @font-face {
+        font-family: "Simonetta";
+        src: url("/fonts/Simonetta-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    .restriccion {
+        --azul: #284f80;
+
+        width: 100%;
+        max-width: 430px;
+        margin: 0 auto;
+        padding: 1rem 1.5rem 2.6rem;
+        text-align: center;
+        font-family: "Simonetta", serif;
+        color: var(--azul);
+
+        /*
+           Blanco declarado como imagen y no como color: el modo oscuro
+           forzado del navegador oscurece colores pero respeta las imágenes.
+        */
+        background-image: linear-gradient(#fff, #fff);
+    }
+
+    .rama {
+        display: block;
+        width: 54%;
+        height: auto;
+        margin: 0 auto;
+    }
+
+    .titulo {
+        margin-top: 0.6rem;
+        font-size: clamp(2.4rem, 11.5vw, 3.1rem);
+        line-height: 1.25;
+        font-weight: 400;
+    }
+
+    /*
+       La nota corta sola dentro de este ancho: con los renglones cortados
+       a mano, al cambiar el cuerpo quedan palabras sueltas al final.
+    */
+    .nota {
+        max-width: 19rem;
+        margin: 1.2rem auto 0;
+        font-size: clamp(1.05rem, 5vw, 1.28rem);
+        letter-spacing: 0.02em;
+        line-height: 1.75;
+    }
+</style>
+
+<script>
+    import { animarEntrada } from "../scripts/animaciones";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const seccion = document.getElementById("restriccion");
+        if (!seccion) return;
+
+        animarEntrada(
+            seccion.querySelectorAll<HTMLElement>(":scope > *"),
+            seccion,
+        );
+    });
+</script>

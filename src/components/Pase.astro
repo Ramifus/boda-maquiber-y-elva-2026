@@ -1,0 +1,150 @@
+---
+// src/components/Pase.astro
+// Los pases reservados: el número y el ticket, uno al lado del otro.
+//
+// El número llega desde la página: las personalizadas (/[slug]) lo pasan
+// según lista.txt. La genérica (/) no lo pasa, así que cae en 1 y el
+// bloque se dibuja igual.
+interface Props {
+    pases?: number;
+}
+
+const { pases = 1 } = Astro.props;
+
+/*
+   La frase del pie se arma en un solo lugar: repartida en varios archivos,
+   el singular y el plural se desincronizan en cuanto se retoca uno.
+*/
+const piePorPases = (cantidad: number) =>
+    cantidad === 1 ? "Pase para ti" : "Pases para ti";
+
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const intro = ["Con mucho cariño hemos", "reservado"];
+// ──────────────────────────────────────────────────────────────
+---
+
+<section id="pase" class="pase">
+    <p class="intro">
+        {intro.map((linea) => (
+            <span class="linea">{linea}</span>
+        ))}
+    </p>
+
+    <div class="marco">
+        <div class="casilla">
+            <span class="numero">{pases}</span>
+        </div>
+
+        <div class="casilla">
+            <span
+                class="icono icono-azul ticket"
+                style="--ic: url('/imagenes/reserva.png')"
+                aria-hidden="true"
+            />
+        </div>
+    </div>
+
+    <p class="pie">{piePorPases(pases)}</p>
+</section>
+
+<style>
+    /*
+       Simonetta se declara acá también: cada bloque tiene que poder
+       dibujarse aunque los demás no estén en la página.
+    */
+    @font-face {
+        font-family: "Simonetta";
+        src: url("/fonts/Simonetta-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    .pase {
+        --azul: #284f80;
+
+        width: 100%;
+        max-width: 430px;
+        margin: 0 auto;
+        padding: 2.6rem 1.5rem 1rem;
+        text-align: center;
+        font-family: "Simonetta", serif;
+        color: var(--azul);
+
+        /*
+           Blanco declarado como imagen y no como color: el modo oscuro
+           forzado del navegador oscurece colores pero respeta las imágenes.
+        */
+        background-image: linear-gradient(#fff, #fff);
+    }
+
+    .intro {
+        font-size: clamp(1.05rem, 5vw, 1.28rem);
+        letter-spacing: 0.1em;
+        /* compensa el hueco que el tracking deja tras la última letra */
+        text-indent: 0.1em;
+        line-height: 1.7;
+        text-transform: uppercase;
+    }
+
+    .linea {
+        display: block;
+    }
+
+    /* Recuadro de afuera, con las dos casillas adentro */
+    .marco {
+        display: flex;
+        justify-content: center;
+        gap: 0.9rem;
+        width: fit-content;
+        margin: 1.5rem auto 0;
+        padding: 0.9rem;
+        border: 1px solid rgba(40, 79, 128, 0.55);
+    }
+
+    .casilla {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: clamp(64px, 19vw, 82px);
+        height: clamp(64px, 19vw, 82px);
+        border: 1px solid rgba(40, 79, 128, 0.55);
+    }
+
+    .numero {
+        font-size: clamp(1.9rem, 9vw, 2.4rem);
+        line-height: 1;
+    }
+
+    /* El ticket se pinta con máscara: el color va en el fondo */
+    .ticket {
+        width: 60%;
+        height: 60%;
+    }
+
+    .icono-azul {
+        background-color: #284f80;
+    }
+
+    .pie {
+        margin-top: 1.5rem;
+        font-size: clamp(1.05rem, 5vw, 1.28rem);
+        letter-spacing: 0.1em;
+        text-indent: 0.1em;
+        text-transform: uppercase;
+    }
+</style>
+
+<script>
+    import { animarEntrada } from "../scripts/animaciones";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const seccion = document.getElementById("pase");
+        if (!seccion) return;
+
+        animarEntrada(
+            seccion.querySelectorAll<HTMLElement>(":scope > *"),
+            seccion,
+        );
+    });
+</script>

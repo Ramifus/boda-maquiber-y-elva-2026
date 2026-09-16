@@ -1,0 +1,213 @@
+---
+// src/components/SugerenciaRegalos.astro
+// Sugerencia de regalo: el número de cuenta y el QR, con las calas
+// apoyadas en el borde izquierdo.
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const titulo = "Sugerencia de regalo";
+
+const nota =
+    "El mejor regalo es que estés presente en este día tan esperado, pero si deseas hacernos un obsequio te dejamos las siguientes opciones:";
+
+const rotuloCuenta = "Nro de Cuenta:";
+const numeroCuenta = "1021134442";
+
+const separador = "O QR";
+
+// El QR se exporta desde el banco y se guarda como /imagenes/qr.png
+const qr = "/imagenes/qr.png";
+const detallesQr = ["Monto solicitado: variable", "Motivo: REGALO DE BODA"];
+// ──────────────────────────────────────────────────────────────
+---
+
+<section id="regalos" class="regalos">
+    <!-- Calas apoyadas en el borde izquierdo, detrás del texto -->
+    <img
+        src="/imagenes/florcita3.png"
+        alt=""
+        width="1024"
+        height="1536"
+        class="calas"
+        aria-hidden="true"
+    />
+
+    <div class="contenido">
+        <!-- Caja de regalo -->
+        <svg
+            class="icono"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+        >
+            <rect x="3" y="9.5" width="18" height="11.5" rx="1"></rect>
+            <path d="M1.8 6.2h20.4v3.3H1.8z"></path>
+            <path d="M12 6.2v14.8"></path>
+            <path d="M12 6.2C10.8 3 9.2 2.2 8 2.6c-1.6.5-1.7 3 .4 3.6h3.6z"></path>
+            <path d="M12 6.2c1.2-3.2 2.8-4 4-3.6 1.6.5 1.7 3-.4 3.6H12z"></path>
+        </svg>
+
+        <h2 class="titulo">{titulo}</h2>
+
+        <p class="nota">{nota}</p>
+
+        <p class="rotulo">{rotuloCuenta}</p>
+        <p class="numero">{numeroCuenta}</p>
+
+        <p class="separador">{separador}</p>
+
+        <img src={qr} alt="Código QR para el regalo" class="qr" />
+
+        <p class="detalles">
+            {detallesQr.map((linea) => <span class="linea">{linea}</span>)}
+        </p>
+    </div>
+</section>
+
+<style>
+    /*
+       Simonetta se declara acá también: cada bloque tiene que poder
+       dibujarse aunque los demás no estén en la página.
+    */
+    @font-face {
+        font-family: "Simonetta";
+        src: url("/fonts/Simonetta-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    /*
+       z-index 0 arma la caja de apilado del bloque: así las calas, que van
+       en -1, quedan encima del fondo pero debajo del texto.
+    */
+    .regalos {
+        --azul: #284f80;
+
+        position: relative;
+        z-index: 0;
+        width: 100%;
+        max-width: 430px;
+        margin: 0 auto;
+        padding: 2.4rem 1.5rem 2.8rem;
+        text-align: center;
+        font-family: "Simonetta", serif;
+        color: var(--azul);
+
+        /* El fondo con textura, en tamaño original */
+        background-image: url("/imagenes/fondoplomo.png");
+        background-size: auto;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    /*
+       El recorte trae las calas pegadas al borde izquierdo de su marco,
+       así que entra tal cual por ese lado.
+    */
+    .calas {
+        position: absolute;
+        left: -8%;
+        bottom: 0;
+        z-index: -1;
+        width: 40%;
+        height: auto;
+        pointer-events: none;
+    }
+
+    .contenido {
+        position: relative;
+        z-index: 1;
+    }
+
+    .icono {
+        display: block;
+        width: clamp(34px, 9vw, 42px);
+        height: clamp(34px, 9vw, 42px);
+        margin: 0 auto;
+        color: var(--azul);
+    }
+
+    .titulo {
+        margin-top: 0.9rem;
+        font-size: clamp(1.15rem, 5.4vw, 1.4rem);
+        letter-spacing: 0.1em;
+        /* compensa el hueco que el tracking deja tras la última letra */
+        text-indent: 0.1em;
+        line-height: 1.6;
+        font-weight: 400;
+        text-transform: uppercase;
+    }
+
+    /*
+       La nota corta sola dentro de este ancho: con renglones cortados a
+       mano, al cambiar el cuerpo quedan palabras sueltas al final.
+    */
+    .nota {
+        max-width: 19rem;
+        margin: 1.3rem auto 0;
+        font-size: clamp(1.05rem, 5vw, 1.28rem);
+        letter-spacing: 0.02em;
+        line-height: 1.75;
+    }
+
+    .rotulo {
+        margin-top: 1.6rem;
+        font-size: clamp(1.05rem, 5vw, 1.28rem);
+        letter-spacing: 0.02em;
+    }
+
+    /* El número en negro: es el dato que se copia */
+    .numero {
+        margin-top: 0.3rem;
+        color: #000000;
+        font-size: clamp(1.15rem, 5.4vw, 1.4rem);
+        letter-spacing: 0.06em;
+        text-indent: 0.06em;
+    }
+
+    .separador {
+        margin-top: 1.4rem;
+        font-size: clamp(1.05rem, 5vw, 1.28rem);
+        letter-spacing: 0.06em;
+        text-indent: 0.06em;
+    }
+
+    .qr {
+        display: block;
+        width: 58%;
+        max-width: 230px;
+        height: auto;
+        margin: 1.1rem auto 0;
+    }
+
+    .detalles {
+        margin-top: 0.7rem;
+        font-size: clamp(0.72rem, 3.3vw, 0.85rem);
+        letter-spacing: 0.02em;
+        line-height: 1.7;
+    }
+
+    .linea {
+        display: block;
+    }
+</style>
+
+<script>
+    import { animarEntrada } from "../scripts/animaciones";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const seccion = document.getElementById("regalos");
+        const contenido = seccion?.querySelector(".contenido");
+        if (!seccion || !contenido) return;
+
+        // Las calas quedan fuera: animarEntrada escribe su propio transform
+        // y les correría la posición.
+        animarEntrada(
+            contenido.querySelectorAll<HTMLElement>(":scope > *"),
+            seccion,
+        );
+    });
+</script>

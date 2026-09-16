@@ -1,0 +1,38 @@
+---
+// src/pages/[pase].astro
+// Una invitación por cada cantidad de pases: /pase1, /pase2, /pase3...
+//
+// Antes había que copiar index.astro y renombrarlo por cada pase. Ahora
+// este archivo los genera todos: el número sale de la URL y viaja a la
+// invitación, que lo dibuja en el bloque del pase.
+import Layout from "../layouts/Layout.astro";
+import Invitacion from "../components/Invitacion.astro";
+
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const titulo = "Maquiber & Elva Adriana | 5 de Diciembre 2026";
+// ──────────────────────────────────────────────────────────────
+
+/*
+   Astro no deja que getStaticPaths lea las constantes de acá arriba, así
+   que el total vive adentro: para tener más pases, se cambia ese 10 y
+   nada más.
+*/
+export function getStaticPaths() {
+    const TOTAL_PASES = 10;
+
+    return Array.from({ length: TOTAL_PASES }, (_, i) => ({
+        params: { pase: `pase${i + 1}` },
+        props: { pases: i + 1 },
+    }));
+}
+
+interface Props {
+    pases: number;
+}
+
+const { pases } = Astro.props;
+---
+
+<Layout title={titulo}>
+    <Invitacion pases={pases} />
+</Layout>

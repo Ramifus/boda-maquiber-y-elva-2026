@@ -1,0 +1,77 @@
+---
+// src/components/Despedida.astro
+// Cierre de la invitación: la frase arriba y la gypsophila cerrando abajo.
+//
+// La frase va escrita, no dentro de la imagen: así se lee nítida en
+// cualquier pantalla y se cambia sin volver a exportar nada.
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const frase = "Tu presencia hará este día aún más inolvidable";
+// ──────────────────────────────────────────────────────────────
+---
+
+<section id="despedida" class="despedida">
+    <p class="frase font-great-vibes">{frase}</p>
+
+    <!-- La franja de flores que cierra el bloque, a todo el ancho -->
+    <img
+        src="/imagenes/floresabajo.png"
+        alt=""
+        width="1080"
+        height="611"
+        class="flores"
+        aria-hidden="true"
+    />
+</section>
+
+<style>
+    .despedida {
+        --azul: #284f80;
+
+        position: relative;
+        z-index: 0;
+        width: 100%;
+        max-width: 430px;
+        margin: 0 auto;
+        padding: 2.4rem 0 0;
+        text-align: center;
+
+        /*
+           Blanco declarado como imagen y no como color: el modo oscuro
+           forzado del navegador oscurece colores pero respeta las imágenes.
+        */
+        background-image: linear-gradient(#fff, #fff);
+    }
+
+    .frase {
+        max-width: 17rem;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        color: var(--azul);
+        font-size: clamp(2rem, 9.5vw, 2.6rem);
+        line-height: 1.35;
+    }
+
+    /*
+       La imagen trae un 13% de su alto vacío arriba de las flores, así que
+       el margen negativo recupera ese hueco: con margen positivo, la franja
+       quedaba a casi 60px de la frase.
+    */
+    .flores {
+        display: block;
+        width: 100%;
+        height: auto;
+        margin-top: -6%;
+    }
+</style>
+
+<script>
+    import { animarEntrada } from "../scripts/animaciones";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const seccion = document.getElementById("despedida");
+        const frase = seccion?.querySelector<HTMLElement>(".frase");
+        if (!seccion || !frase) return;
+
+        animarEntrada(frase, seccion);
+    });
+</script>

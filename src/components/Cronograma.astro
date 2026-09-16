@@ -1,0 +1,140 @@
+﻿---
+// src/components/Cronograma.astro
+// Título del itinerario + línea de tiempo en zigzag con los momentos del día.
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const titulo = "Itinerario";
+
+// Los iconos salen de /public/iconos, donde cada archivo lleva el nombre
+// del momento al que corresponde.
+const momentos = [
+    { nombre: ["BODA", "RELIGIOSA"], hora: "16:00 hrs.", icono: "iglesia.png" },
+    { nombre: ["RECEPCIÓN"], hora: "19:00 hrs.", icono: "recepcion.png" },
+    { nombre: ["BAILE DE", "LOS NOVIOS"], hora: "20:00 hrs.", icono: "musica.png" },
+    { nombre: ["BRINDIS"], hora: "20:30 hrs.", icono: "brindis.png" },
+    { nombre: ["QUE COMIENCE", "LA FIESTA"], hora: "21:00 hrs.", icono: "musica.png" },
+    { nombre: ["CENA"], hora: "21:30 hrs.", icono: "cena.png" },
+    { nombre: ["LANZAMIENTO", "DE BOUQUET", "Y BOTÓN"], hora: "22:00 hrs.", icono: "ramo.png" },
+    { nombre: ["CORTE", "DE TORTA"], hora: "22:30 hrs.", icono: "torta.png" },
+    { nombre: ["QUE SIGA", "LA FIESTA"], hora: "23:00 hrs.", icono: "musica.png" },
+    { nombre: ["FIN DE", "LA FIESTA"], hora: "03:00 hrs.", icono: "despedida.png" },
+];
+// ──────────────────────────────────────────────────────────────
+---
+
+<section id="franja-cronograma" class="w-full pt-2 pb-1 px-7">
+    <h2
+        class="font-great-vibes texto-azul text-center text-[clamp(2.4rem,11.5vw,3.1rem)] leading-[1.3]"
+    >
+        {titulo}
+    </h2>
+</section>
+
+<section class="w-full px-6 pt-1 pb-14">
+    <div id="linea-tiempo" class="relative max-w-[330px] mx-auto">
+        <!-- Línea central: sólida y en azul, como en el diseño -->
+        <div class="absolute left-1/2 top-3 bottom-3 w-px -translate-x-1/2 fondo-azul"></div>
+
+        {
+            momentos.map((momento, i) => (
+                // Cada momento sube 16px (~15% de su alto) sobre el anterior:
+                // como se alternan izquierda y derecha, se encabalgan sin
+                // pisarse y la línea queda mucho más compacta.
+                <div
+                    class={`momento relative grid grid-cols-2 gap-3 ${
+                        i > 0 ? "-mt-4" : ""
+                    }`}
+                >
+                    {/*
+                       Tramo horizontal que sale de la línea central hacia el
+                       lado donde está el ítem, a la altura del centro del
+                       icono (la mitad de sus 40px).
+                    */}
+                    <span
+                        class={`absolute top-[20px] h-px w-[14px] fondo-azul ${
+                            i % 2 === 0 ? "left-1/2" : "right-1/2"
+                        }`}
+                    />
+
+                    {/* Punto sobre la línea central, en el arranque del tramo */}
+                    <span class="absolute left-1/2 top-[20px] -translate-x-1/2 -translate-y-1/2 w-[4px] h-[4px] rounded-full fondo-azul" />
+
+                    <div
+                        class={`flex flex-col items-center text-center ${
+                            i % 2 === 0 ? "col-start-2" : "col-start-1"
+                        }`}
+                    >
+                        <span
+                            class="icono icono-azul w-[40px] h-[40px]"
+                            style={`--ic: url('/iconos/${momento.icono}')`}
+                            aria-hidden="true"
+                        />
+                        <h3 class="font-simonetta texto-azul text-[clamp(0.8rem,3.9vw,0.95rem)] tracking-[0.06em] leading-[1.7] mt-2">
+                            {momento.nombre.map((linea) => (
+                                <span class="block whitespace-nowrap">{linea}</span>
+                            ))}
+                        </h3>
+                        <p class="font-simonetta texto-negro text-[clamp(0.85rem,4.1vw,1rem)] tracking-wide mt-1">
+                            {momento.hora}
+                        </p>
+                    </div>
+                </div>
+            ))
+        }
+    </div>
+</section>
+
+<style>
+    /*
+       Solo cambian el color y la tipografía: la estructura del itinerario
+       —banda, línea central, puntos y tramos— queda como estaba.
+       Simonetta se declara acá porque cada bloque tiene que poder
+       dibujarse aunque los demás no estén en la página.
+    */
+    @font-face {
+        font-family: "Simonetta";
+        src: url("/fonts/Simonetta-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    .font-simonetta {
+        font-family: "Simonetta", serif;
+    }
+
+    .fondo-azul {
+        background-color: #284f80;
+    }
+
+    .texto-azul {
+        color: #284f80;
+    }
+
+    /* La hora en negro, igual que en las tarjetas de dirección */
+    .texto-negro {
+        color: #000000;
+    }
+
+    /* Los iconos se pintan con máscara: el color va en el fondo */
+    .icono-azul {
+        background-color: #284f80;
+    }
+</style>
+
+<script>
+    import { animarEntrada } from "../scripts/animaciones";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const titulo = document.getElementById("franja-cronograma");
+        if (titulo) animarEntrada(titulo, titulo);
+
+        /*
+           Cada momento se dispara con su propio trigger en vez de escalonar
+           los diez a la vez: la lista es larga y, con un solo trigger, los
+           últimos se animarían estando todavía fuera de pantalla.
+        */
+        document.querySelectorAll<HTMLElement>(".momento").forEach((momento) => {
+            animarEntrada(momento, momento);
+        });
+    });
+</script>

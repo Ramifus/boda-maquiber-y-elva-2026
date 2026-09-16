@@ -1,0 +1,70 @@
+---
+// src/components/Foto2.astro
+// Foto de los novios a todo el ancho, desvanecida arriba y abajo.
+//
+// El desvanecido va con máscara y no con dos degradados blancos encima:
+// así el corte toma el color que tenga la página y no le pinta una banda
+// al bloque de al lado.
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const altFoto = "Los novios";
+// ──────────────────────────────────────────────────────────────
+---
+
+<section id="foto2" class="seccion-foto">
+    <img
+        src="/imagenes/foto4.png"
+        alt={altFoto}
+        width="1008"
+        height="1561"
+        class="foto"
+    />
+</section>
+
+<style>
+    .seccion-foto {
+        width: 100%;
+        max-width: 430px;
+        margin: 0 auto;
+
+        /*
+           Blanco declarado como imagen y no como color: el modo oscuro
+           forzado del navegador oscurece colores pero respeta las imágenes.
+        */
+        background-image: linear-gradient(#fff, #fff);
+    }
+
+    .foto {
+        display: block;
+        width: 100%;
+        height: auto;
+        -webkit-mask-image: linear-gradient(
+            to bottom,
+            transparent 0%,
+            rgba(0, 0, 0, 0.55) 10%,
+            #000 26%,
+            #000 74%,
+            rgba(0, 0, 0, 0.55) 90%,
+            transparent 100%
+        );
+        mask-image: linear-gradient(
+            to bottom,
+            transparent 0%,
+            rgba(0, 0, 0, 0.55) 10%,
+            #000 26%,
+            #000 74%,
+            rgba(0, 0, 0, 0.55) 90%,
+            transparent 100%
+        );
+    }
+</style>
+
+<script>
+    import { animarEntrada } from "../scripts/animaciones";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const seccion = document.getElementById("foto2");
+        if (!seccion) return;
+
+        animarEntrada(seccion, seccion, { y: 18 });
+    });
+</script>

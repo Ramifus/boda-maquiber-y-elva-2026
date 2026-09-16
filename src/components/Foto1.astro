@@ -1,0 +1,48 @@
+---
+// src/components/Foto1.astro
+// Foto de los novios a todo el ancho, con los bordes limpios.
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const altFoto = "Los novios";
+// ──────────────────────────────────────────────────────────────
+---
+
+<section id="foto1" class="seccion-foto">
+    <img
+        src="/imagenes/foto3.png"
+        alt={altFoto}
+        width="1008"
+        height="1560"
+        class="foto"
+    />
+</section>
+
+<style>
+    .seccion-foto {
+        width: 100%;
+        max-width: 430px;
+        margin: 0 auto;
+
+        /*
+           Blanco declarado como imagen y no como color: el modo oscuro
+           forzado del navegador oscurece colores pero respeta las imágenes.
+        */
+        background-image: linear-gradient(#fff, #fff);
+    }
+
+    .foto {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+</style>
+
+<script>
+    import { animarEntrada } from "../scripts/animaciones";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const seccion = document.getElementById("foto1");
+        if (!seccion) return;
+
+        animarEntrada(seccion, seccion, { y: 18 });
+    });
+</script>

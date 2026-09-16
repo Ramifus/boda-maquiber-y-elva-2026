@@ -1,0 +1,248 @@
+---
+// src/components/CeremoniaCivil.astro
+// Mismo diseño que DireccionCeremonia: tarjeta con el lugar, la dirección
+// y la hora, entre dos bandas de flores. La de abajo va dada vuelta.
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const titulo = "Recepción Social";
+const lugar = "Fraternidad Totai";
+const direccion = "Av 4 de Octubre, 8vo anillo, zona la Colorada";
+const hora = "19:00 hrs.";
+const enlaceMapa = "https://maps.app.goo.gl/h2KGniKXfMt9p2vh8";
+const textoBoton = "Ver ubicación";
+// ──────────────────────────────────────────────────────────────
+---
+
+<section id="ceremonia-civil" class="ceremonia">
+    <img
+        src="/imagenes/flor6.png"
+        alt=""
+        width="736"
+        height="255"
+        class="flores flores-arriba"
+        aria-hidden="true"
+    />
+
+    <div class="tarjeta">
+        <h2 class="titulo">{titulo}</h2>
+
+        <p class="lugar">{lugar}</p>
+
+        <p class="direccion">{direccion}</p>
+
+        <p class="hora">
+            <!-- Reloj, en el mismo renglón que la hora -->
+            <svg
+                class="icono"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+            >
+                <circle cx="12" cy="12" r="8.5"></circle>
+                <path d="M12 7.2V12l3.2 2"></path>
+            </svg>
+            <span>{hora}</span>
+        </p>
+
+        <a
+            class="boton"
+            href={enlaceMapa}
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            {textoBoton}
+        </a>
+    </div>
+
+    <img
+        src="/imagenes/flor6.png"
+        alt=""
+        width="736"
+        height="255"
+        class="flores flores-abajo"
+        aria-hidden="true"
+    />
+</section>
+
+<style>
+    /*
+       Simonetta se declara acá también: cada bloque tiene que poder
+       dibujarse aunque los demás no estén en la página.
+    */
+    @font-face {
+        font-family: "Simonetta";
+        src: url("/fonts/Simonetta-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: "Simonetta";
+        src: url("/fonts/Simonetta-Italic.ttf") format("truetype");
+        font-weight: 400;
+        font-style: italic;
+        font-display: swap;
+    }
+
+    .ceremonia {
+        --azul: #284f80;
+
+        position: relative;
+        z-index: 0;
+        width: 100%;
+        max-width: 430px;
+        margin: 0 auto;
+        /* Aire arriba y abajo: sin esto el bloque queda pegado a los vecinos */
+        padding-block: 2.6rem 1rem;
+        text-align: center;
+        font-family: "Simonetta", serif;
+        color: var(--azul);
+
+        /*
+           Blanco declarado como imagen y no como color: el modo oscuro
+           forzado del navegador oscurece colores pero respeta las imágenes.
+        */
+        background-image: linear-gradient(#fff, #fff);
+    }
+
+    /*
+       Las bandas van al ancho justo de la columna: cualquier sobreancho con
+       margen negativo las descentraba.
+    */
+    .flores {
+        display: block;
+        width: 72%;
+        margin: 0 auto;
+        height: auto;
+    }
+
+    /* La banda de abajo va dada vuelta para que las flores miren afuera */
+    .flores-abajo {
+        transform: scaleY(-1);
+    }
+
+    .tarjeta {
+        position: relative;
+        z-index: 1;
+        /*
+           La tarjeta se monta apenas sobre las bandas: con más solapado se
+           comía casi toda la flor, sobre todo la de abajo.
+        */
+        margin: -1.2rem 1.4rem;
+        padding: 2.2rem 1.4rem 2.4rem;
+        border: 1px solid rgba(40, 79, 128, 0.22);
+        border-radius: 10px;
+
+        /* El fondo con textura, en tamaño original */
+        background-image: url("/imagenes/fondoplomo.png");
+        background-size: auto;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    .titulo {
+        font-size: clamp(1.15rem, 5.4vw, 1.4rem);
+        letter-spacing: 0.1em;
+        /* compensa el hueco que el tracking deja tras la última letra */
+        text-indent: 0.1em;
+        line-height: 1.6;
+        font-weight: 400;
+        text-transform: uppercase;
+    }
+
+    /* El nombre del lugar en negro, igual que la hora: son los datos duros */
+    .lugar {
+        margin-top: 1.6rem;
+        color: #000000;
+        font-size: clamp(1.15rem, 5.4vw, 1.4rem);
+        letter-spacing: 0.02em;
+        line-height: 1.6;
+    }
+
+    /* La dirección va un escalón más chica que el nombre del lugar */
+    .direccion {
+        margin-top: 0.6rem;
+        font-size: clamp(1.05rem, 5vw, 1.28rem);
+        letter-spacing: 0.02em;
+        line-height: 1.6;
+    }
+
+    /* El reloj acompaña a la hora en el mismo renglón */
+    .icono {
+        width: clamp(24px, 6.6vw, 30px);
+        height: clamp(24px, 6.6vw, 30px);
+        color: #000000;
+        vertical-align: -0.22em;
+        margin-right: 0.5rem;
+    }
+
+    /* La hora va en negro y más grande: es el dato que tiene que saltar */
+    .hora {
+        margin-top: 1.1rem;
+        color: #000000;
+        font-size: clamp(1.28rem, 6vw, 1.55rem);
+        letter-spacing: 0.08em;
+        text-indent: 0.08em;
+    }
+
+    .boton {
+        display: inline-block;
+        margin-top: 1.6rem;
+        padding: 0.55rem 1.4rem;
+        border: 1px solid rgba(40, 79, 128, 0.55);
+        color: var(--azul);
+        font-size: clamp(0.92rem, 4.3vw, 1.1rem);
+        letter-spacing: 0.1em;
+        text-indent: 0.1em;
+        text-transform: uppercase;
+        text-decoration: none;
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+    import { animarEntrada } from "../scripts/animaciones";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const seccion = document.getElementById("ceremonia-civil");
+        if (!seccion) return;
+
+        // La tarjeta entra primero; las bandas llevan su propia animación.
+        animarEntrada(
+            seccion.querySelectorAll<HTMLElement>(":scope > *:not(.flores)"),
+            seccion,
+        );
+
+        const arriba = seccion.querySelector(".flores-arriba");
+        const abajo = seccion.querySelector(".flores-abajo");
+        const scrollTrigger = { trigger: seccion, start: "top 80%" };
+
+        // Las dos bandas se revelan con un recorte y no escalando: la de
+        // abajo va volteada por CSS y un scaleY de la animación le pisaría
+        // el volteo. El recorte arranca pegado al borde que la tarjeta tapa
+        // y se abre hacia afuera, así las flores parecen salir de atrás.
+        [arriba, abajo].forEach((banda, i) => {
+            if (!banda) return;
+
+            gsap.fromTo(
+                banda,
+                { clipPath: "inset(100% 0 0 0)", opacity: 0 },
+                {
+                    clipPath: "inset(0% 0 0 0)",
+                    opacity: 1,
+                    duration: 1.4,
+                    delay: 0.25 + i * 0.2,
+                    ease: "power3.out",
+                    scrollTrigger,
+                },
+            );
+        });
+    });
+</script>

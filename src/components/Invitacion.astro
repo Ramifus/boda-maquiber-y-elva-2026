@@ -1,0 +1,79 @@
+---
+// src/components/Invitacion.astro
+// El cuerpo completo de la invitación, en un solo lugar.
+//
+// Lo usan las dos páginas —la genérica (index.astro) y la personalizada
+// ([slug].astro)— para que no existan dos copias que se vayan
+// desincronizando a medida que se retoca el diseño.
+//
+// Sin `invitado` no se dibuja el nombre en la portada; sin `pases` no se
+// dibuja la etiqueta de pases al pie. Así la misma pieza sirve para la
+// versión general y para las 61 personalizadas.
+// import Portada from "./Portada.astro"; // APAGADA mientras se diseña el resto
+import Versiculo from "./Versiculo.astro";
+import NombresPadres from "./NombresPadres.astro";
+import NombresFlores from "./NombresFlores.astro";
+import Fecha from "./Fecha.astro";
+import Foto1 from "./Foto1.astro";
+import Foto2 from "./Foto2.astro";
+import Foto3 from "./Foto3.astro";
+import DireccionCeremonia from "./DireccionCeremonia.astro";
+import Contador from "./Contador.astro";
+import CeremoniaCivil from "./CeremoniaCivil.astro";
+import Cronograma from "./Cronograma.astro";
+import CodigoVestimenta from "./CodigoVestimenta.astro";
+import Pase from "./Pase.astro";
+import Restriccion from "./Restriccion.astro";
+import ConfirmarAsistencia from "./ConfirmarAsistencia.astro";
+import SugerenciaRegalos from "./SugerenciaRegalos.astro";
+import Historia from "./Historia.astro";
+import Confirmar from "./Confirmar.astro";
+import Despedida from "./Despedida.astro";
+import BotonMusica from "./BotonMusica.astro";
+
+interface Props {
+    invitado?: string;
+    pases?: number;
+}
+
+const { invitado, pases } = Astro.props;
+---
+
+<!-- PORTADA (cubre todo hasta que se toca el sobre) -->
+{/* <Portada invitado={invitado} /> */}
+
+<!-- CONTENIDO DE LA INVITACIÓN -->
+<div id="contenido-principal">
+    <NombresFlores />
+    <Versiculo />
+    <Fecha />
+    <Foto1 />
+    <NombresPadres />
+    <Foto2 />
+    <DireccionCeremonia />
+ <CeremoniaCivil />
+  <Cronograma />
+  <Foto3 />
+    <!-- <Contador /> -->
+   
+   
+    <CodigoVestimenta />
+   
+   
+    <Pase pases={pases} />
+   
+   
+    <Restriccion />
+   
+   
+    <ConfirmarAsistencia />
+   
+   
+    <!-- <SugerenciaRegalos /> -->
+    <!-- <Historia /> -->
+    <!-- <Confirmar pases={pases} /> -->
+    <Despedida />
+</div>
+
+<!-- Control de música flotante -->
+<BotonMusica />

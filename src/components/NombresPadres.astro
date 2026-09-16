@@ -1,0 +1,185 @@
+---
+// src/components/NombresPadres.astro
+// Padres y padrinos, sobre fondo blanco, con la cala apoyada a la
+// izquierda. Los padrinos de iguales van antes que los de anillos.
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const intro = ["Con la bendición de Dios y el amor de", "nuestros padres:"];
+
+const grupos = [
+    {
+        titulo: "Padres del Novio",
+        nombres: ["Primitivo Zorrillo Urquizo", "Leandra Cayo Perez"],
+    },
+    {
+        titulo: "Padre de la Novia",
+        nombres: ["Filemón Mamani Miranda"],
+    },
+    {
+        titulo: "Padrinos de Iguales",
+        nombres: ["Silvia Jimena Mamani Foronda", "Gerson Chinche Chambi"],
+    },
+    {
+        titulo: "Madrina de Anillos",
+        nombres: ["Marcelina Mamani Miranda"],
+    },
+    {
+        titulo: "Padrinos de Filmación y Fotografía",
+        nombres: ["René Mamani Trujillo"],
+    },
+];
+
+const cierre = [
+    "A ellos agradecemos todo su amor",
+    "incondicional para guiarnos en cada etapa",
+    "de nuestras vidas",
+];
+// ──────────────────────────────────────────────────────────────
+---
+
+<section id="padres" class="padres">
+    <!-- La cala apoyada en el borde izquierdo, detrás del texto -->
+    <img
+        src="/imagenes/florcita.png"
+        alt=""
+        width="1231"
+        height="1278"
+        class="cala"
+        aria-hidden="true"
+    />
+
+    <p class="intro">
+        {intro.map((linea) => <span class="linea">{linea}</span>)}
+    </p>
+
+    {
+        grupos.map((grupo) => (
+            <div class="grupo">
+                <h3 class="titulo font-great-vibes">{grupo.titulo}</h3>
+                {grupo.nombres.map((nombre) => (
+                    <p class="nombre">{nombre}</p>
+                ))}
+            </div>
+        ))
+    }
+
+    <p class="cierre">
+        {cierre.map((linea) => <span class="linea">{linea}</span>)}
+    </p>
+</section>
+
+<style>
+    /*
+       Simonetta se declara acá también: cada bloque tiene que poder
+       dibujarse aunque los demás no estén en la página.
+    */
+    @font-face {
+        font-family: "Simonetta";
+        src: url("/fonts/Simonetta-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: "Simonetta";
+        src: url("/fonts/Simonetta-Italic.ttf") format("truetype");
+        font-weight: 400;
+        font-style: italic;
+        font-display: swap;
+    }
+
+    /*
+       z-index 0 arma la caja de apilado del bloque: así la cala, que va en
+       -1, queda encima del fondo pero debajo del texto.
+    */
+    .padres {
+        --azul: #284f80;
+
+        position: relative;
+        z-index: 0;
+        width: 100%;
+        max-width: 430px;
+        margin: 0 auto;
+        padding: 2.5rem 1.5rem 2.8rem;
+        text-align: center;
+        font-family: "Simonetta", serif;
+        color: var(--azul);
+
+        /*
+           Blanco declarado como imagen y no como color: el modo oscuro
+           forzado del navegador oscurece colores pero respeta las imágenes.
+        */
+        background-image: linear-gradient(#fff, #fff);
+    }
+
+    /*
+       La imagen trae la flor arriba a la derecha y el tallo bajando a la
+       izquierda, así que entra tal cual: la flor mira hacia adentro.
+    */
+    .cala {
+        position: absolute;
+        top: 16%;
+        left: -6%;
+        z-index: -1;
+        width: 24%;
+        height: auto;
+        pointer-events: none;
+    }
+
+    /*
+       Los renglones vienen cortados a mano, pero sin nowrap: en una
+       pantalla angosta la línea baja antes que salirse de la columna.
+    */
+    .linea {
+        display: block;
+    }
+
+    .intro {
+        font-size: clamp(1.05rem, 5vw, 1.28rem);
+        letter-spacing: 0.03em;
+        line-height: 1.9;
+    }
+
+    .grupo {
+        margin-top: 2rem;
+    }
+
+    .titulo {
+        font-size: clamp(1.9rem, 9vw, 2.4rem);
+        line-height: 1.3;
+        font-weight: 400;
+    }
+
+    .nombre {
+        margin-top: 0.5rem;
+        font-size: clamp(0.88rem, 4.1vw, 1.05rem);
+        letter-spacing: 0.1em;
+        /* compensa el hueco que el tracking deja tras la última letra */
+        text-indent: 0.1em;
+        line-height: 1.7;
+        text-transform: uppercase;
+    }
+
+    .cierre {
+        margin-top: 2.6rem;
+        font-size: clamp(1.05rem, 5vw, 1.28rem);
+        letter-spacing: 0.03em;
+        line-height: 1.9;
+    }
+</style>
+
+<script>
+    import { animarEntrada } from "../scripts/animaciones";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const seccion = document.getElementById("padres");
+        if (!seccion) return;
+
+        // La cala queda fuera: animarEntrada escribe su propio transform y
+        // le correría la posición.
+        animarEntrada(
+            seccion.querySelectorAll<HTMLElement>(":scope > *:not(.cala)"),
+            seccion,
+        );
+    });
+</script>

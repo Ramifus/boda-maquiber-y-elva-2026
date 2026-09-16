@@ -1,0 +1,204 @@
+---
+// src/components/CodigoVestimenta.astro
+// Tarjeta con el código de vestimenta: las siluetas de los novios, la
+// etiqueta y la nota. Las flores se apoyan encima de las esquinas de la
+// tarjeta —la rama arriba a la izquierda y las calas abajo a la derecha—
+// así que van por delante, no detrás.
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const titulo = "Código de vestimenta";
+const etiqueta = "Formal";
+const nota =
+    "Con cariño, les pedimos no asistir con prendas de color blanco ni azul marino.";
+// ──────────────────────────────────────────────────────────────
+---
+
+<section id="vestimenta" class="vestimenta">
+    <div class="marco">
+        <!-- Rama sobre la esquina de arriba a la izquierda -->
+        <img
+            src="/imagenes/flor5.png"
+            alt=""
+            width="1080"
+            height="742"
+            class="flor flor-arriba"
+            aria-hidden="true"
+        />
+
+        <div class="tarjeta">
+            <h2 class="titulo">{titulo}</h2>
+
+            <img
+                src="/imagenes/codigo.png"
+                alt="Novio de traje y novia de vestido largo"
+                width="1402"
+                height="1122"
+                class="siluetas"
+            />
+
+            <p class="etiqueta font-great-vibes">{etiqueta}</p>
+
+            <p class="nota">{nota}</p>
+        </div>
+
+        <!-- Calas sobre el borde de abajo a la derecha -->
+        <img
+            src="/imagenes/florcita2.png"
+            alt=""
+            width="1024"
+            height="1536"
+            class="flor flor-abajo"
+            aria-hidden="true"
+        />
+    </div>
+</section>
+
+<style>
+    /*
+       Simonetta se declara acá también: cada bloque tiene que poder
+       dibujarse aunque los demás no estén en la página.
+    */
+    @font-face {
+        font-family: "Simonetta";
+        src: url("/fonts/Simonetta-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: "Simonetta";
+        src: url("/fonts/Simonetta-Italic.ttf") format("truetype");
+        font-weight: 400;
+        font-style: italic;
+        font-display: swap;
+    }
+
+    .vestimenta {
+        --azul: #284f80;
+
+        width: 100%;
+        max-width: 430px;
+        margin: 0 auto;
+        padding-block: 2.6rem;
+        text-align: center;
+        font-family: "Simonetta", serif;
+        color: var(--azul);
+
+        /*
+           Blanco declarado como imagen y no como color: el modo oscuro
+           forzado del navegador oscurece colores pero respeta las imágenes.
+        */
+        background-image: linear-gradient(#fff, #fff);
+    }
+
+    /*
+       El marco es el que ubica las flores. No lleva overflow: las dos
+       tienen que poder asomar por fuera de la tarjeta.
+    */
+    .marco {
+        position: relative;
+        margin: 0 1.4rem;
+    }
+
+    .tarjeta {
+        position: relative;
+        z-index: 1;
+        padding: 2.4rem 1.5rem 2.6rem;
+        border: 1px solid rgba(40, 79, 128, 0.22);
+        border-radius: 10px;
+
+        /* El fondo con textura, en tamaño original */
+        background-image: url("/imagenes/fondoplomo.png");
+        background-size: auto;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    /* Las flores van por delante de la tarjeta, apoyadas en sus esquinas */
+    .flor {
+        position: absolute;
+        z-index: 2;
+        height: auto;
+        pointer-events: none;
+    }
+
+    /*
+       La rama trae el ramo pegado al borde derecho de su recorte, así que
+       se espeja para que entre desde la izquierda.
+    */
+    .flor-arriba {
+        top: -6%;
+        left: -16%;
+        width: 52%;
+        transform: scaleX(-1);
+    }
+
+    /* Apoyada justo sobre la línea de abajo de la tarjeta, sin pasarse */
+    .flor-abajo {
+        right: -13%;
+        bottom: 0;
+        width: 34%;
+    }
+
+    .titulo {
+        font-size: clamp(1.15rem, 5.4vw, 1.4rem);
+        letter-spacing: 0.1em;
+        /* compensa el hueco que el tracking deja tras la última letra */
+        text-indent: 0.1em;
+        line-height: 1.6;
+        font-weight: 400;
+        text-transform: uppercase;
+    }
+
+    .siluetas {
+        display: block;
+        width: 52%;
+        height: auto;
+        margin: 1.8rem auto 0;
+    }
+
+    .etiqueta {
+        margin-top: 1.2rem;
+        font-size: clamp(2rem, 9.5vw, 2.6rem);
+        line-height: 1.3;
+    }
+
+    /*
+       La nota corta sola. Con los renglones cortados a mano, al agrandar
+       la letra cada uno volvía a partirse y dejaba "azul" y "marino."
+       colgando en su propia línea.
+    */
+    .nota {
+        margin-top: 1.4rem;
+        max-width: 17rem;
+        margin-inline: auto;
+        font-size: clamp(1.05rem, 5vw, 1.28rem);
+        letter-spacing: 0.02em;
+        line-height: 1.7;
+    }
+
+</style>
+
+<script>
+    import { animarEntrada } from "../scripts/animaciones";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const seccion = document.getElementById("vestimenta");
+        const tarjeta = seccion?.querySelector(".tarjeta");
+        if (!seccion || !tarjeta) return;
+
+        // Primero entra el contenido de la tarjeta.
+        animarEntrada(
+            tarjeta.querySelectorAll<HTMLElement>(":scope > *"),
+            seccion,
+        );
+
+        // Las flores quedan fuera de animarEntrada: escribe su propio
+        // transform y le borraría el espejado a la rama de arriba.
+        animarEntrada(
+            seccion.querySelectorAll<HTMLElement>(".flor-abajo"),
+            seccion,
+            { delay: 0.35 },
+        );
+    });
+</script>
